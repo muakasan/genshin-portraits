@@ -1,0 +1,165 @@
+<html>
+    <head>
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    </head>
+<canvas id="myCanvas" width="50" height="145">
+</canvas>
+</br>
+</br>
+
+<div id="portrait-selection"></div>
+<script>
+    charMap = {
+        "jean": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619494241375.png",
+        "amber": "https://uploadstatic-sea.mihoyo.com/contentweb/20200310/2020031016592515874.png",
+        "lisa": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619510379464.png",
+        "kaeya": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619490965086.png",
+        "barbara": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619500256389.png",
+        "diluc": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619504030315.png",
+        "razor": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619513419872.png",
+        "venti": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619520566339.png",
+        "klee": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619524764235.png",
+        "bennett": "https://uploadstatic-sea.mihoyo.com/contentweb/20200312/2020031220001073799.png",
+        "noelle": "https://uploadstatic-sea.mihoyo.com/contentweb/20200315/2020031517331182257.png",
+        "fischl": "https://uploadstatic-sea.mihoyo.com/contentweb/20200330/2020033022164911534.png",
+        "sucrose": "https://uploadstatic-sea.mihoyo.com/contentweb/20200723/2020072319114696003.png",
+        "mona": "https://uploadstatic-sea.mihoyo.com/contentweb/20200828/2020082817270441202.png",
+        "diona": "https://uploadstatic-sea.mihoyo.com/contentweb/20201106/2020110618564834380.png",
+        "albedo": "https://uploadstatic-sea.mihoyo.com/contentweb/20201216/2020121611141454228.png",
+        "xiao": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619530797687.png",
+        "beidou": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619533898562.png",
+        "ningguang": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619540911246.png",
+        "xiangling": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031618223919497.png",
+        "xingqiu": "https://uploadstatic-sea.mihoyo.com/contentweb/20200324/2020032418063127277.png",
+        "chongyun": "https://uploadstatic-sea.mihoyo.com/contentweb/20200602/2020060220171563309.png",
+        "qiqi": "https://uploadstatic-sea.mihoyo.com/contentweb/20200828/2020082817144917562.png",
+        "keqing": "https://uploadstatic-sea.mihoyo.com/contentweb/20200828/2020082817192175739.png",
+        "tartaglia": "https://uploadstatic-sea.mihoyo.com/contentweb/20201103/2020110321155815420.png",
+        "zhongli": "https://uploadstatic-sea.mihoyo.com/contentweb/20201120/2020112022105267987.png",
+        "xinyan": "https://uploadstatic-sea.mihoyo.com/contentweb/20201125/2020112516015327993.png",
+        "ganyu": "https://uploadstatic-sea.mihoyo.com/contentweb/20201231/2020123114302212435.png",
+        "hutao": "https://uploadstatic-sea.mihoyo.com/contentweb/20210224/2021022411105923049.png"
+    };
+    let outerPad = 15;
+    let framingPad = 15;
+    let portraitPad = 5;
+    let leftPad = 20;
+    let spacing = 12;
+    let portraitSize = 115;
+    let selectedChars = [];
+    let outerHeight = 145;
+    for (let charName in charMap) {
+        //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
+        let pimg = $("<img>")
+        pimg.attr("style", "cursor: pointer;");
+        pimg.attr('src', charMap[charName]); 
+        pimg.click(function(){
+            console.log(charName);
+            selectedChars.push(charName);
+            $("#myCanvas").attr("width", leftPad + 127*selectedChars.length)
+            makePortraits(selectedChars);
+        });
+        $("#portrait-selection").append(pimg);
+    }
+    // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+        if (typeof stroke === 'undefined') {
+            stroke = true;
+        }
+        if (typeof radius === 'undefined') {
+            radius = 5;
+        }
+        if (typeof radius === 'number') {
+            radius = {tl: radius, tr: radius, br: radius, bl: radius};
+        } else {
+            var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+            for (var side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+            }
+        }
+        ctx.beginPath();
+        ctx.moveTo(x + radius.tl, y);
+        ctx.lineTo(x + width - radius.tr, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+        ctx.lineTo(x + width, y + height - radius.br);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+        ctx.lineTo(x + radius.bl, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+        ctx.lineTo(x, y + radius.tl);
+        ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+        ctx.closePath();
+        if (fill) {
+            ctx.fill();
+        }
+        if (stroke) {
+            ctx.stroke();
+        }
+    }
+    function makePortraits(images){
+        let c = document.getElementById("myCanvas");
+        let ctx = c.getContext("2d");
+        //https://stackoverflow.com/questions/6011378/how-to-add-image-to-canvas
+        ctx.fillStyle = "#02041C";
+        roundRect(ctx, 0, 0, outerPad*2 + portraitSize*images.length + spacing*(images.length-1), outerHeight, radius=8, fill=true);
+        for(let i = 0; i < images.length; i++){
+            let baseImage = new Image();
+            imageName = images[i];
+            console.log(imageName)
+            baseImage.src = charMap[imageName];
+            baseImage.onload = function(){
+                // ctx.fillStyle = "#081030";
+                ctx.fillStyle = "#0B0923";
+                leftBorder = outerPad + i*portraitSize + i*spacing
+                roundRect(ctx, leftBorder, outerPad, portraitSize, portraitSize, radius=4, fill=true);
+                ctx.drawImage(baseImage, leftBorder + portraitPad, outerPad + portraitPad);
+            }
+        }
+    }
+    makePortraits([]);
+    
+
+    // Create gradient
+    
+    // var grd = ctx.createLinearGradient(0, 0, 400, 0);
+    // grd.addColorStop(0, "red");
+    // grd.addColorStop(1, "white");
+
+    // Fill with gradient
+    //ctx.fillStyle = grd;
+    //ctx.fillRect(10, 10, 150, 111);
+    // https://stackoverflow.com/questions/18480474/how-to-save-an-image-from-canvas
+    // function download(canvas, filename) {
+    //     /// create an "off-screen" anchor tag
+    //     var lnk = document.createElement('a'),
+    //         e;
+
+    //     /// the key here is to set the download attribute of the a tag
+    //     lnk.download = filename;
+
+    //     /// convert canvas content to data-uri for link. When download
+    //     /// attribute is set the content pointed to by link will be
+    //     /// pushed as "download" in HTML5 capable browsers
+    //     lnk.href = c.toDataURL();
+
+    //     /// create a "fake" click-event to trigger the download
+    //     if (document.createEvent) {
+
+    //         e = document.createEvent("MouseEvents");
+    //         e.initMouseEvent("click", true, true, window,
+    //                         0, 0, 0, 0, 0, false, false, false,
+    //                         false, 0, null);
+
+    //         lnk.dispatchEvent(e);
+
+    //     } else if (lnk.fireEvent) {
+
+    //         lnk.fireEvent("onclick");
+    //     }
+    // }
+    // <img src="https://genshin.honeyhunterworld.com/img/char/amber.png">
+</script>
+</html>
+
