@@ -43,14 +43,14 @@
         "ganyu": "https://uploadstatic-sea.mihoyo.com/contentweb/20201231/2020123114302212435.png",
         "hutao": "https://uploadstatic-sea.mihoyo.com/contentweb/20210224/2021022411105923049.png"
     };
-    let outerPad = 15;
-    let framingPad = 15;
-    let portraitPad = 5;
+    let framePad = 15; // Padding around portrait frame
+    let portraitPad = 5; // Padding around image
     let leftPad = 20;
     let spacing = 12;
-    let portraitSize = 115;
+    let portraitSize = 106;
     let selectedChars = [];
-    let outerHeight = 145;
+    let totalHeight = 145;
+    let frameSize = portraitSize+2*portraitPad;
     for (let charName in charMap) {
         //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
         let pimg = $("<img>")
@@ -59,7 +59,6 @@
         pimg.click(function(){
             console.log(charName);
             selectedChars.push(charName);
-            $("#myCanvas").attr("width", leftPad + 127*selectedChars.length)
             makePortraits(selectedChars);
         });
         $("#portrait-selection").append(pimg);
@@ -99,22 +98,25 @@
         }
     }
     function makePortraits(images){
+        let totalWidth = framePad*2 + frameSize*images.length + spacing*(images.length-1);
+        $("#myCanvas").attr("width", totalWidth)
         let c = document.getElementById("myCanvas");
         let ctx = c.getContext("2d");
         //https://stackoverflow.com/questions/6011378/how-to-add-image-to-canvas
         ctx.fillStyle = "#02041C";
-        roundRect(ctx, 0, 0, outerPad*2 + portraitSize*images.length + spacing*(images.length-1), outerHeight, radius=8, fill=true);
+
+        roundRect(ctx, 0, 0, totalWidth, totalHeight, radius=8, fill=true);
         for(let i = 0; i < images.length; i++){
             let baseImage = new Image();
             imageName = images[i];
             console.log(imageName)
+            let leftBorder = framePad + i*(frameSize+spacing)
+            ctx.fillStyle = "#0B0923";
+            roundRect(ctx, leftBorder, framePad, frameSize, portraitSize+2*portraitPad, radius=4, fill=true);
             baseImage.src = charMap[imageName];
             baseImage.onload = function(){
                 // ctx.fillStyle = "#081030";
-                ctx.fillStyle = "#0B0923";
-                leftBorder = outerPad + i*portraitSize + i*spacing
-                roundRect(ctx, leftBorder, outerPad, portraitSize, portraitSize, radius=4, fill=true);
-                ctx.drawImage(baseImage, leftBorder + portraitPad, outerPad + portraitPad);
+                ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad);
             }
         }
     }
@@ -160,6 +162,15 @@
     //     }
     // }
     // <img src="https://genshin.honeyhunterworld.com/img/char/amber.png">
+
+    // if(imageName !== "empty"){
+    //     baseImage.src = charMap[imageName];
+    //     baseImage.onload = function(){
+    //         // ctx.fillStyle = "#081030";
+    //         ctx.fillStyle = "#0B0923";
+    //         ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad);
+    //     }
+    // }
 </script>
 </html>
 
