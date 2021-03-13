@@ -12,7 +12,7 @@
 
 <div id="portrait-selection"></div>
 <script>
-    charMap = {
+    let charMap = {
         "jean": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619494241375.png",
         "amber": "https://uploadstatic-sea.mihoyo.com/contentweb/20200310/2020031016592515874.png",
         "lisa": "https://uploadstatic-sea.mihoyo.com/contentweb/20200316/2020031619510379464.png",
@@ -43,6 +43,14 @@
         "ganyu": "https://uploadstatic-sea.mihoyo.com/contentweb/20201231/2020123114302212435.png",
         "hutao": "https://uploadstatic-sea.mihoyo.com/contentweb/20210224/2021022411105923049.png"
     };
+    //https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
+    charMap = Object.keys(charMap).sort().reduce(
+        (obj, key) => { 
+            obj[key] = charMap[key]; 
+            return obj;
+        }, 
+        {}
+    );
     let framePad = 15; // Padding around portrait frame
     let portraitPad = 5; // Padding around image
     let leftPad = 20;
