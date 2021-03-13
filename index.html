@@ -43,6 +43,9 @@
         "ganyu": "https://uploadstatic-sea.mihoyo.com/contentweb/20201231/2020123114302212435.png",
         "hutao": "https://uploadstatic-sea.mihoyo.com/contentweb/20210224/2021022411105923049.png"
     };
+    let iconMap = {
+        "fillslot": "assets/abstract-user-flat-3-colored.svg", // https://freesvg.org/user-icon-picture
+    };
     //https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
     charMap = Object.keys(charMap).sort().reduce(
         (obj, key) => { 
@@ -51,6 +54,10 @@
         }, 
         {}
     );
+    for (let iconName in iconMap){
+        charMap[iconName] = iconMap[iconName];
+    }
+
     let framePad = 15; // Padding around portrait frame
     let portraitPad = 5; // Padding around image
     let leftPad = 20;
@@ -64,6 +71,8 @@
         let pimg = $("<img>")
         pimg.attr("style", "cursor: pointer;");
         pimg.attr('src', charMap[charName]); 
+        pimg.attr('width', portraitSize);
+        pimg.attr('height', portraitSize);
         pimg.click(function(){
             console.log(charName);
             selectedChars.push(charName);
@@ -123,8 +132,7 @@
             roundRect(ctx, leftBorder, framePad, frameSize, portraitSize+2*portraitPad, radius=4, fill=true);
             baseImage.src = charMap[imageName];
             baseImage.onload = function(){
-                // ctx.fillStyle = "#081030";
-                ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad);
+                ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad, portraitSize, portraitSize);
             }
         }
     }
@@ -179,6 +187,7 @@
     //         ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad);
     //     }
     // }
+    //https://codepo8.github.io/canvas-images-and-pixels/resize.html
 </script>
 </html>
 
