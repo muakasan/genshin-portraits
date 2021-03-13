@@ -8,6 +8,7 @@
 <canvas id="myCanvas" width="50" height="145">
 </canvas>
 </br>
+<img id="undo" src="assets/undo-24px.svg" width=80 height=80 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
 </br>
 
 <div id="portrait-selection"></div>
@@ -80,6 +81,13 @@
         });
         $("#portrait-selection").append(pimg);
     }
+
+    $("#undo").click(function(){
+        if(selectedChars.length > 0){
+            selectedChars.pop();
+            makePortraits(selectedChars);
+        }
+    });
     // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
     function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
         if (typeof stroke === 'undefined') {
