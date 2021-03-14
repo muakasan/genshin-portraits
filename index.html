@@ -8,7 +8,7 @@
 <canvas id="myCanvas" width="0" height="0">
 </canvas>
 </br>
-<img id="undo" src="assets/undo-24px.svg" width=256 height=256 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
+<img id="undo" src="assets/undo-24px.svg" width=128 height=128 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
 </br>
 
 <div id="portrait-selection"></div>
@@ -75,8 +75,8 @@
         let pimg = $("<img>")
         pimg.attr("style", "cursor: pointer;");
         pimg.attr('src', charMap[charName]); 
-        pimg.attr('width', portraitSize);
-        pimg.attr('height', portraitSize);
+        pimg.attr('width', 128);
+        pimg.attr('height', 128);
         pimg.click(function(){
             console.log(charName);
             selectedChars.push(charName);
