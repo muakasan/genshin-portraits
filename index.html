@@ -5,10 +5,10 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
     </head>
-<canvas id="myCanvas" width="50" height="145">
+<canvas id="myCanvas" width="0" height="0">
 </canvas>
 </br>
-<img id="undo" src="assets/undo-24px.svg" width=80 height=80 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
+<img id="undo" src="assets/undo-24px.svg" width=256 height=256 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
 </br>
 
 <div id="portrait-selection"></div>
@@ -62,13 +62,13 @@
         charMap[iconName] = iconMap[iconName];
     }
 
-    let framePad = 15; // Padding around portrait frame
-    let portraitPad = 5; // Padding around image
-    let leftPad = 20;
-    let spacing = 12;
-    let portraitSize = 106;
+    let framePad = 36; // Padding around portrait frame
+    let portraitPad = 12; // Padding around image
+    let leftPad = 48;
+    let spacing = 29;
+    let portraitSize = 256;
     let selectedChars = [];
-    let totalHeight = 145;
+    let totalHeight = 2*framePad + 2*portraitPad + portraitSize; // 146 or 
     let frameSize = portraitSize+2*portraitPad;
     for (let charName in charMap) {
         //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
@@ -127,20 +127,21 @@
     }
     function makePortraits(images){
         let totalWidth = framePad*2 + frameSize*images.length + spacing*(images.length-1);
-        $("#myCanvas").attr("width", totalWidth)
+        $("#myCanvas").attr("width", totalWidth);
+        $("#myCanvas").attr("height", totalHeight);
         let c = document.getElementById("myCanvas");
         let ctx = c.getContext("2d");
         //https://stackoverflow.com/questions/6011378/how-to-add-image-to-canvas
         ctx.fillStyle = "#02041C";
 
-        roundRect(ctx, 0, 0, totalWidth, totalHeight, radius=8, fill=true);
+        roundRect(ctx, 0, 0, totalWidth, totalHeight, radius=19, fill=true);
         for(let i = 0; i < images.length; i++){
             let baseImage = new Image();
             imageName = images[i];
             console.log(imageName)
             let leftBorder = framePad + i*(frameSize+spacing)
             ctx.fillStyle = "#0B0923";
-            roundRect(ctx, leftBorder, framePad, frameSize, portraitSize+2*portraitPad, radius=4, fill=true);
+            roundRect(ctx, leftBorder, framePad, frameSize, portraitSize+2*portraitPad, radius=10, fill=true);
             baseImage.src = charMap[imageName];
             baseImage.onload = function(){
                 ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad, portraitSize, portraitSize);
