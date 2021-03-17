@@ -13,7 +13,6 @@
 
 <div id="portrait-selection"></div>
 <script>
-    // https://upload-os-bbs.mihoyo.com/game_record/genshin/character_icon/
     let charMap = {
         "jean": "assets/UI_AvatarIcon_Qin.png",
         "amber": "assets/UI_AvatarIcon_Ambor.png",
@@ -48,9 +47,15 @@
     let iconMap = {
         "malemc": "assets/UI_AvatarIcon_PlayerBoy.png",
         "femalemc": "assets/UI_AvatarIcon_PlayerGirl.png",
-        "fillslot": "assets/abstract-user-flat-3-colored.svg", // https://freesvg.org/user-icon-picture
+        "fillslot": "assets/abstract-user-flat-3-colored.svg",
+        "anemo": 'assets/anemo.png', 
+        "cryo": 'assets/cryo.png',
+        "electro": 'assets/electro.png',
+        "geo": 'assets/geo.png',
+        "hydro": 'assets/hydro.png',
+        "pyro": 'assets/pyro.png'
     };
-    //https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
+    // Sorts the characters by name https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
     charMap = Object.keys(charMap).sort().reduce(
         (obj, key) => { 
             obj[key] = charMap[key]; 
@@ -64,15 +69,16 @@
 
     let framePad = 36; // Padding around portrait frame
     let portraitPad = 12; // Padding around image
-    let leftPad = 48;
-    let spacing = 29;
+    let spacing = 29; // Spacing between portrait frames
     let portraitSize = 256;
     let selectedChars = [];
     let totalHeight = 2*framePad + 2*portraitPad + portraitSize; // 146 or 
     let frameSize = portraitSize+2*portraitPad;
+
+    // Adds clickable character buttons
     for (let charName in charMap) {
         //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
-        let pimg = $("<img>")
+        let pimg = $("<img>");
         pimg.attr("style", "cursor: pointer;");
         pimg.attr('src', charMap[charName]); 
         pimg.attr('width', 128);
@@ -91,6 +97,7 @@
             makePortraits(selectedChars);
         }
     });
+
     // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
     function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
         if (typeof stroke === 'undefined') {
@@ -125,6 +132,7 @@
             ctx.stroke();
         }
     }
+    // Adds the icons to the canvas and the portrait drawings
     function makePortraits(images){
         let totalWidth = framePad*2 + frameSize*images.length + spacing*(images.length-1);
         $("#myCanvas").attr("width", totalWidth);
@@ -149,57 +157,7 @@
         }
     }
     makePortraits([]);
-    
 
-    // Create gradient
-    
-    // var grd = ctx.createLinearGradient(0, 0, 400, 0);
-    // grd.addColorStop(0, "red");
-    // grd.addColorStop(1, "white");
-
-    // Fill with gradient
-    //ctx.fillStyle = grd;
-    //ctx.fillRect(10, 10, 150, 111);
-    // https://stackoverflow.com/questions/18480474/how-to-save-an-image-from-canvas
-    // function download(canvas, filename) {
-    //     /// create an "off-screen" anchor tag
-    //     var lnk = document.createElement('a'),
-    //         e;
-
-    //     /// the key here is to set the download attribute of the a tag
-    //     lnk.download = filename;
-
-    //     /// convert canvas content to data-uri for link. When download
-    //     /// attribute is set the content pointed to by link will be
-    //     /// pushed as "download" in HTML5 capable browsers
-    //     lnk.href = c.toDataURL();
-
-    //     /// create a "fake" click-event to trigger the download
-    //     if (document.createEvent) {
-
-    //         e = document.createEvent("MouseEvents");
-    //         e.initMouseEvent("click", true, true, window,
-    //                         0, 0, 0, 0, 0, false, false, false,
-    //                         false, 0, null);
-
-    //         lnk.dispatchEvent(e);
-
-    //     } else if (lnk.fireEvent) {
-
-    //         lnk.fireEvent("onclick");
-    //     }
-    // }
-    // <img src="https://genshin.honeyhunterworld.com/img/char/amber.png">
-
-    // if(imageName !== "empty"){
-    //     baseImage.src = charMap[imageName];
-    //     baseImage.onload = function(){
-    //         // ctx.fillStyle = "#081030";
-    //         ctx.fillStyle = "#0B0923";
-    //         ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad);
-    //     }
-    // }
-    //https://codepo8.github.io/canvas-images-and-pixels/resize.html
 </script>
 </html>
 
