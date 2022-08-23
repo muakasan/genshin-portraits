@@ -1,184 +1,184 @@
 <html>
-    <head>
-        <script
-        src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"></script>
-    </head>
-    <body style="background-color:#2b2941;"></body>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body style="background-color:#2b2941;"></body>
 <canvas id="myCanvas" width="0" height="0">
 </canvas>
 </br>
-<img id="undo" src="assets/undo-24px.svg" width=128 height=128 style="cursor: pointer;"> <!-- https://material.io/resources/icons/ -->
+<img id="undo" src="assets/undo-24px.svg" width=128 height=128 style="cursor: pointer;">
+<!-- https://material.io/resources/icons/ -->
 </br>
 <div id="portrait-selection"></div>
 <script>
-    let charMap = {
-        "jean": "assets/UI_AvatarIcon_Qin.png",
-        "amber": "assets/UI_AvatarIcon_Ambor.png",
-        "lisa": "assets/UI_AvatarIcon_Lisa.png",
-        "kaeya": "assets/UI_AvatarIcon_Kaeya.png",
-        "barbara": "assets/UI_AvatarIcon_Barbara.png",
-        "diluc": "assets/UI_AvatarIcon_Diluc.png",
-        "razor": "assets/UI_AvatarIcon_Razor.png",
-        "venti": "assets/UI_AvatarIcon_Venti.png",
-        "klee": "assets/UI_AvatarIcon_Klee.png",
-        "bennett": "assets/UI_AvatarIcon_Bennett.png",
-        "noelle": "assets/UI_AvatarIcon_Noel.png",
-        "fischl": "assets/UI_AvatarIcon_Fischl.png",
-        "sucrose": "assets/UI_AvatarIcon_Sucrose.png",
-        "mona": "assets/UI_AvatarIcon_Mona.png",
-        "diona": "assets/UI_AvatarIcon_Diona.png",
-        "albedo": "assets/UI_AvatarIcon_Albedo.png",
-        "xiao": "assets/UI_AvatarIcon_Xiao.png",
-        "beidou": "assets/UI_AvatarIcon_Beidou.png",
-        "ningguang": "assets/UI_AvatarIcon_Ningguang.png",
-        "xiangling": "assets/UI_AvatarIcon_Xiangling.png",
-        "xingqiu": "assets/UI_AvatarIcon_Xingqiu.png",
-        "chongyun": "assets/UI_AvatarIcon_Chongyun.png",
-        "qiqi": "assets/UI_AvatarIcon_Qiqi.png",
-        "keqing": "assets/UI_AvatarIcon_Keqing.png",
-        "tartaglia": "assets/UI_AvatarIcon_Tartaglia.png",
-        "zhongli": "assets/UI_AvatarIcon_Zhongli.png",
-        "xinyan": "assets/UI_AvatarIcon_Xinyan.png",
-        "ganyu": "assets/UI_AvatarIcon_Ganyu.png",
-        "hutao": "assets/UI_AvatarIcon_Hutao.png",
-        "rosaria": "assets/UI_AvatarIcon_Rosaria.png",
-        "yanfei": "assets/UI_AvatarIcon_Feiyan.png",
-        "eula": "assets/UI_AvatarIcon_Eula.png",
-        "kazuha": "assets/UI_AvatarIcon_Kazuha.png",
-        "ayaka": "assets/UI_AvatarIcon_Ayaka.png",
-        "yoimiya": "assets/UI_AvatarIcon_Yoimiya.png",
-        "sayu": "assets/UI_AvatarIcon_Sayu.png",
-        "raiden": "assets/UI_AvatarIcon_Shougun.png",
-        "sara": "assets/UI_AvatarIcon_Sara.png",
-        "kokomi": "assets/UI_AvatarIcon_Kokomi.png",
-        "aloy": "assets/UI_AvatarIcon_Aloy.png",
-        "thoma": "assets/UI_AvatarIcon_Tohma.png",
-        "itto": "assets/UI_AvatarIcon_Itto.png",
-        "gorou": "assets/UI_AvatarIcon_Gorou.png",
-        "shenhe": "assets/UI_AvatarIcon_Shenhe.png",
-        "yunjin": "assets/UI_AvatarIcon_Yunjin.png",
-        "yae": "assets/UI_AvatarIcon_Yae.png",
-        "ayato": "assets/UI_AvatarIcon_Ayato.png",
-        "yelan": "assets/UI_AvatarIcon_Yelan.png",
-        "shinobu": "assets/UI_AvatarIcon_Shinobu.png",
-        "heizou": "assets/UI_AvatarIcon_Heizo.png"
-    };
-    let iconMap = {
+    let charMap = {}
+    const iconMap = {
         "malemc": "assets/UI_AvatarIcon_PlayerBoy.png",
         "femalemc": "assets/UI_AvatarIcon_PlayerGirl.png",
         "fillslot": "assets/abstract-user-flat-3-colored.svg",
-        "anemo": 'assets/anemo.png', 
-        "cryo": 'assets/cryo.png',
-        "electro": 'assets/electro.png',
-        "geo": 'assets/geo.png',
-        "hydro": 'assets/hydro.png',
-        "pyro": 'assets/pyro.png'
-    };
-    // Sorts the characters by name https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key
-    charMap = Object.keys(charMap).sort().reduce(
-        (obj, key) => { 
-            obj[key] = charMap[key]; 
-            return obj;
-        }, 
-        {}
-    );
-    for (let iconName in iconMap){
-        charMap[iconName] = iconMap[iconName];
+        "anemo": "assets/anemo.png",
+        "cryo": "assets/cryo.png",
+        "electro": "assets/electro.png",
+        "geo": "assets/geo.png",
+        "hydro": "assets/hydro.png",
+        "pyro": "assets/pyro.png"
     }
 
-    let framePad = 36; // Padding around portrait frame
-    let portraitPad = 12; // Padding around image
-    let spacing = 29; // Spacing between portrait frames
-    let portraitSize = 256;
-    let selectedChars = [];
-    let totalHeight = 2*framePad + 2*portraitPad + portraitSize; // 146 or 
-    let frameSize = portraitSize+2*portraitPad;
+    const framePad = 36 // Padding around portrait frame
+    const portraitPad = 12 // Padding around image
+    const spacing = 29 // Spacing between portrait frames
+    const portraitSize = 256
+    const selectedChars = []
+    const totalHeight = 2 * framePad + 2 * portraitPad + portraitSize // 146 or 
+    const frameSize = portraitSize + 2 * portraitPad
 
-    // Adds clickable character buttons
-    for (let charName in charMap) {
-        //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
-        let pimg = $("<img>");
-        pimg.attr("style", "cursor: pointer;");
-        pimg.attr('src', charMap[charName]); 
-        pimg.attr('width', 128);
-        pimg.attr('height', 128);
-        pimg.click(function(){
-            console.log(charName);
-            selectedChars.push(charName);
-            makePortraits(selectedChars);
-        });
-        $("#portrait-selection").append(pimg);
+    makeSelection()
+    function makeSelection() {
+        $("#portrait-selection").empty()
+
+        // Adds clickable character buttons
+        addSelection(charMap)
+        addSelection(iconMap)
     }
 
-    $("#undo").click(function(){
-        if(selectedChars.length > 0){
-            selectedChars.pop();
-            makePortraits(selectedChars);
+    function addSelection(map) {
+        for (const charName in map) {
+            //https://stackoverflow.com/questions/8013792/how-to-create-a-new-img-tag-with-jquery-with-the-src-and-id-from-a-javascript-o
+            const pimg = $("<img>")
+            pimg.attr("style", "cursor: pointer")
+            pimg.attr("src", map[charName])
+            pimg.attr("width", 128)
+            pimg.attr("height", 128)
+            pimg.click(function () {
+                console.log(charName)
+                selectedChars.push({
+                    name: charName,
+                    icon: map[charName]
+                })
+                makePortraits(selectedChars)
+            })
+            $("#portrait-selection").append(pimg)
         }
-    });
+    }
+
+    $("#undo").click(function () {
+        if (selectedChars.length > 0) {
+            selectedChars.pop()
+            makePortraits(selectedChars)
+        }
+    })
+
+    const genshinData = [
+        ["https://raw.githubusercontent.com/Dimbreath/GenshinData/master/TextMap/TextMapEN.json", "tls"],
+        ["https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarCodexExcelConfigData.json", "codex"],
+        ["https://raw.githubusercontent.com/Dimbreath/GenshinData/master/ExcelBinOutput/AvatarExcelConfigData.json", "avatars"],
+    ]
+
+    for (const [url, name] of genshinData)
+        download(url, name)
+
+    function download(url, name) {
+        const xmlhttp = new XMLHttpRequest()
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status == 200) {
+                const data = JSON.parse(xmlhttp.responseText)
+                onLoaded(data, name)
+            }
+        }
+        xmlhttp.open("GET", url, true)
+        xmlhttp.send()
+    }
+
+    const loaded = {}
+    function onLoaded(data, name) {
+        loaded[name] = data
+        if (Object.keys(loaded).length == genshinData.length)
+            createCharData(loaded)
+    }
+
+    function createCharData(data) {
+        const { avatars, codex, tls } = data
+        for (const char of Object.values(avatars)) {
+            const name = tls[char.nameTextMapHash]
+            if (!Object.values(codex).every(x => x.avatarId !== char.id) && name != "Traveler")
+                charMap[name] = `https://res.cloudinary.com/genshin/image/upload/sprites/${char.iconName}`
+        }
+
+        charMap = Object.keys(charMap).sort().reduce(
+            (obj, key) => {
+                obj[key] = charMap[key]
+                return obj
+            },
+            {}
+        )
+
+        makeSelection()
+    }
 
     // https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
     function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-        if (typeof stroke === 'undefined') {
-            stroke = true;
+        if (typeof stroke === "undefined") {
+            stroke = true
         }
-        if (typeof radius === 'undefined') {
-            radius = 5;
+        if (typeof radius === "undefined") {
+            radius = 5
         }
-        if (typeof radius === 'number') {
-            radius = {tl: radius, tr: radius, br: radius, bl: radius};
+        if (typeof radius === "number") {
+            radius = { tl: radius, tr: radius, br: radius, bl: radius }
         } else {
-            var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+            var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 }
             for (var side in defaultRadius) {
-            radius[side] = radius[side] || defaultRadius[side];
+                radius[side] = radius[side] || defaultRadius[side]
             }
         }
-        ctx.beginPath();
-        ctx.moveTo(x + radius.tl, y);
-        ctx.lineTo(x + width - radius.tr, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-        ctx.lineTo(x + width, y + height - radius.br);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-        ctx.lineTo(x + radius.bl, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-        ctx.lineTo(x, y + radius.tl);
-        ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-        ctx.closePath();
+        ctx.beginPath()
+        ctx.moveTo(x + radius.tl, y)
+        ctx.lineTo(x + width - radius.tr, y)
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr)
+        ctx.lineTo(x + width, y + height - radius.br)
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height)
+        ctx.lineTo(x + radius.bl, y + height)
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl)
+        ctx.lineTo(x, y + radius.tl)
+        ctx.quadraticCurveTo(x, y, x + radius.tl, y)
+        ctx.closePath()
         if (fill) {
-            ctx.fill();
+            ctx.fill()
         }
         if (stroke) {
-            ctx.stroke();
+            ctx.stroke()
         }
     }
-    // Adds the icons to the canvas and the portrait drawings
-    function makePortraits(images){
-        let totalWidth = framePad*2 + frameSize*images.length + spacing*(images.length-1);
-        $("#myCanvas").attr("width", totalWidth);
-        $("#myCanvas").attr("height", totalHeight);
-        let c = document.getElementById("myCanvas");
-        let ctx = c.getContext("2d");
-        //https://stackoverflow.com/questions/6011378/how-to-add-image-to-canvas
-        ctx.fillStyle = "#02041C";
 
-        roundRect(ctx, 0, 0, totalWidth, totalHeight, radius=19, fill=true);
-        for(let i = 0; i < images.length; i++){
-            let baseImage = new Image();
-            imageName = images[i];
-            console.log(imageName)
-            let leftBorder = framePad + i*(frameSize+spacing)
-            ctx.fillStyle = "#0B0923";
-            roundRect(ctx, leftBorder, framePad, frameSize, portraitSize+2*portraitPad, radius=10, fill=true);
-            baseImage.src = charMap[imageName];
-            baseImage.onload = function(){
-                ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad, portraitSize, portraitSize);
+    // Adds the icons to the canvas and the portrait drawings
+    function makePortraits(images) {
+        const totalWidth = framePad * 2 + frameSize * images.length + spacing * (images.length - 1)
+        $("#myCanvas").attr("width", totalWidth)
+        $("#myCanvas").attr("height", totalHeight)
+        const c = document.getElementById("myCanvas")
+        const ctx = c.getContext("2d")
+        //https://stackoverflow.com/questions/6011378/how-to-add-image-to-canvas
+        ctx.fillStyle = "#02041C"
+
+        roundRect(ctx, 0, 0, totalWidth, totalHeight, radius = 19, fill = true)
+        for (let i = 0; i < images.length; i++) {
+            const baseImage = new Image()
+            const image = images[i]
+            console.log(image)
+            const leftBorder = framePad + i * (frameSize + spacing)
+            ctx.fillStyle = "#0B0923"
+            roundRect(ctx, leftBorder, framePad, frameSize, portraitSize + 2 * portraitPad, radius = 10, fill = true)
+            baseImage.src = image.icon
+            baseImage.onload = function () {
+                ctx.drawImage(baseImage, leftBorder + portraitPad, framePad + portraitPad, portraitSize, portraitSize)
             }
         }
     }
-    makePortraits([]);
+    makePortraits([])
 
 </script>
-</html>
 
+</html>
